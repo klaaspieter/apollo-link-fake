@@ -1,0 +1,8 @@
+{
+  "name": "apollo-link-mock",
+  "version": "0.0.1",
+  "description": "Convenient Apollo mocking",
+  "repository": "https://github.com/klaaspieter/apollo-link-mock",
+  "author": "Klaas Pieter Annema <kp@annema.me>",
+  "license": "MIT"
+}
