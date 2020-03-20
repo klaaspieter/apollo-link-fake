@@ -4,5 +4,8 @@
   "description": "Convenient Apollo mocking",
   "repository": "https://github.com/klaaspieter/apollo-link-mock",
   "author": "Klaas Pieter Annema <kp@annema.me>",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^3.8.3"
+  }
 }
