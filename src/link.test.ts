@@ -59,5 +59,12 @@ describe("MockLink", () => {
       });
       link.resolveMostRecentOperation(operation => result);
     });
+
+    it("throws when there are no more operations", () => {
+      const link = new MockLink();
+      expect(() => link.resolveMostRecentOperation({})).toThrow(
+        "MockLink: There are no pending operations"
+      );
+    });
   });
 });

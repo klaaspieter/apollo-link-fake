@@ -21,7 +21,7 @@ class MockLink extends ApolloLink {
     const request = this.requests.pop();
 
     if (!request) {
-      return;
+      throw new Error("MockLink: There are no pending operations");
     }
 
     const { operation, observer } = request;
