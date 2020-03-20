@@ -14,7 +14,8 @@
     "ts-jest": "^25.2.1",
     "typescript": "^3.8.3",
     "graphql": "^14.6.0",
-    "graphql-tag": "^2.10.3"
+    "graphql-tag": "^2.10.3",
+    "@types/zen-observable": "^0.8.0"
   },
   "dependencies": {
     "apollo-link": "^1.2.13",
