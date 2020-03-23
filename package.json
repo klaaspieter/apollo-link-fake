@@ -5,7 +5,13 @@
   "repository": "https://github.com/klaaspieter/apollo-link-mock",
   "author": "Klaas Pieter Annema <kp@annema.me>",
   "license": "MIT",
+  "main": "build/index.js",
+  "types": "build/index.d.ts",
+  "files": [
+    "lib/**/*"
+  ],
   "scripts": {
+    "build": "tsc",
     "test": "jest"
   },
   "devDependencies": {
