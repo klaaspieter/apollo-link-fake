@@ -13,7 +13,10 @@
   "scripts": {
     "build": "tsc",
     "test": "jest",
-    "lint": "tsc --noEmit && eslint '*/**/*.ts'"
+    "lint": "tsc --noEmit && eslint '*/**/*.ts'",
+    "prepare": "yarn build",
+    "prepublishOnly": "yarn test",
+    "preversion": "yarn test"
   },
   "devDependencies": {
     "@apollo/react-hooks": "^3.1.3",
