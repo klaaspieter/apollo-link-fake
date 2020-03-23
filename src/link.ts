@@ -11,7 +11,7 @@ class MockLink extends ApolloLink {
   }[] = [];
 
   public request(operation: Operation): Observable<FetchResult> {
-    return new Observable<FetchResult>(observer => {
+    return new Observable<FetchResult>((observer) => {
       this.requests.push({ operation, observer });
     });
   }

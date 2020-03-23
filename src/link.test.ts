@@ -4,7 +4,7 @@ import gql from "graphql-tag";
 
 describe("MockLink", () => {
   describe("resolveMostRecentOperation", () => {
-    it("can respond with mocked data", done => {
+    it("can respond with mocked data", (done) => {
       const query = gql`
         query {
           user {
@@ -17,22 +17,22 @@ describe("MockLink", () => {
       const result = {
         user: {
           name: "test",
-          age: 5
-        }
+          age: 5,
+        },
       };
 
       execute(link, { query }).subscribe({
-        next: r => {
+        next: (r) => {
           expect(r).toEqual({ data: result });
         },
         complete: () => {
           done();
-        }
+        },
       });
       link.resolveMostRecentOperation(result);
     });
 
-    it("can provided the operation to respond to", done => {
+    it("can provided the operation to respond to", (done) => {
       const query = gql`
         query {
           user {
@@ -45,17 +45,17 @@ describe("MockLink", () => {
       const result = {
         user: {
           name: "test",
-          age: 5
-        }
+          age: 5,
+        },
       };
 
       execute(link, { query }).subscribe({
-        next: r => {
+        next: (r) => {
           expect(r).toEqual({ data: result });
         },
         complete: () => {
           done();
-        }
+        },
       });
       link.resolveMostRecentOperation(() => result);
     });
