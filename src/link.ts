@@ -27,7 +27,7 @@ class MockLink extends ApolloLink {
     const { operation, observer } = request;
 
     const data = typeof payload === "function" ? payload(operation) : payload;
-    observer.next(data);
+    observer.next({ data });
     observer.complete();
   }
 }

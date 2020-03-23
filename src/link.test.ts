@@ -23,7 +23,7 @@ describe("MockLink", () => {
 
       execute(link, { query }).subscribe({
         next: r => {
-          expect(r).toEqual(result);
+          expect(r).toEqual({ data: result });
         },
         complete: () => {
           done();
@@ -51,7 +51,7 @@ describe("MockLink", () => {
 
       execute(link, { query }).subscribe({
         next: r => {
-          expect(r).toEqual(result);
+          expect(r).toEqual({ data: result });
         },
         complete: () => {
           done();
