@@ -57,7 +57,7 @@ describe("MockLink", () => {
           done();
         }
       });
-      link.resolveMostRecentOperation(operation => result);
+      link.resolveMostRecentOperation(() => result);
     });
 
     it("throws when there are no more operations", () => {

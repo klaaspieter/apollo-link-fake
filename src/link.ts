@@ -1,6 +1,9 @@
 import { ApolloLink, Operation, FetchResult } from "apollo-link";
 import Observable, { ZenObservable } from "zen-observable-ts";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type Result = Record<string, any>;
+
 class MockLink extends ApolloLink {
   private requests: {
     operation: Operation;
@@ -14,10 +17,8 @@ class MockLink extends ApolloLink {
   }
 
   public resolveMostRecentOperation(
-    payload:
-      | Record<string, any>
-      | ((operation: Operation) => Record<string, any>)
-  ) {
+    payload: Result | ((operation: Operation) => Result)
+  ): void {
     const request = this.requests.pop();
 
     if (!request) {
