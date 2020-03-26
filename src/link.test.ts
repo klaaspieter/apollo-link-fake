@@ -3,6 +3,57 @@ import { execute } from "apollo-link";
 import gql from "graphql-tag";
 
 describe("MockLink", () => {
+  describe("pendingOperations", () => {
+    it("returns all operations waiting to be resolved/rejected", () => {
+      const query1 = gql`
+        query {
+          user {
+            name
+            age
+          }
+        }
+      `;
+      const query2 = gql`
+        query {
+          teams {
+            name
+          }
+        }
+      `;
+      const link = new MockLink();
+
+      execute(link, { query: query1 }).subscribe({});
+      execute(link, { query: query2 }).subscribe({});
+
+      expect(link.pendingOperations.length).toBe(2);
+    });
+
+    it("does not return operations that have been resolved/rejected", () => {
+      const query1 = gql`
+        query {
+          user {
+            name
+            age
+          }
+        }
+      `;
+      const query2 = gql`
+        query {
+          teams {
+            name
+          }
+        }
+      `;
+      const link = new MockLink();
+      execute(link, { query: query1 }).subscribe({});
+      link.resolveMostRecentOperation({ user: { name: "name", age: 42 } });
+
+      execute(link, { query: query2 }).subscribe({});
+
+      expect(link.pendingOperations.length).toBe(1);
+    });
+  });
+
   describe("resolveMostRecentOperation", () => {
     it("can respond with mocked data", (done) => {
       const query = gql`

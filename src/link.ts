@@ -16,6 +16,10 @@ class MockLink extends ApolloLink {
     });
   }
 
+  get pendingOperations(): Operation[] {
+    return this.requests.map((request) => request.operation);
+  }
+
   public resolveMostRecentOperation(
     payload: Result | ((operation: Operation) => Result)
   ): void {
