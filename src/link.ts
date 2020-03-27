@@ -1,3 +1,4 @@
+import { act } from "react-dom/test-utils";
 import { ApolloLink, Operation, FetchResult } from "apollo-link";
 import Observable, { ZenObservable } from "zen-observable-ts";
 
@@ -25,15 +26,17 @@ class MockLink extends ApolloLink {
   ): void {
     const request = this.requests.pop();
 
-    if (!request) {
-      throw new Error("MockLink: There are no pending operations");
-    }
+    act(() => {
+      if (!request) {
+        throw new Error("MockLink: There are no pending operations");
+      }
 
-    const { operation, observer } = request;
+      const { operation, observer } = request;
 
-    const data = typeof payload === "function" ? payload(operation) : payload;
-    observer.next({ data });
-    observer.complete();
+      const data = typeof payload === "function" ? payload(operation) : payload;
+      observer.next({ data });
+      observer.complete();
+    });
   }
 }
 export { MockLink };
