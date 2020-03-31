@@ -54,6 +54,37 @@ describe("MockLink", () => {
     });
   });
 
+  describe("findOperation", () => {
+    it("finds the first operation that matches", () => {
+      const query = gql`
+        query me {
+          user {
+            name
+            age
+          }
+        }
+      `;
+      const link = new MockLink();
+      execute(link, { query }).subscribe({});
+
+      const operation = link.findOperation(
+        (operation) => operation.operationName === "me"
+      );
+
+      expect(operation).toBeDefined();
+    });
+
+    it("throws when there are no macthing operations", () => {
+      const link = new MockLink();
+
+      expect(() => {
+        link.findOperation(() => false);
+      }).toThrow(
+        "MockLink: Operation was not found in the list of pending operations"
+      );
+    });
+  });
+
   describe("resolveMostRecentOperation", () => {
     it("can respond with mocked data", (done) => {
       const query = gql`

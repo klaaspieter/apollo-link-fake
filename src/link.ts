@@ -21,6 +21,20 @@ class MockLink extends ApolloLink {
     return this.requests.map((request) => request.operation);
   }
 
+  public findOperation(
+    predicate: (operation: Operation) => boolean
+  ): Operation {
+    const operation = this.pendingOperations.find(predicate);
+
+    if (operation === undefined) {
+      throw new Error(
+        "MockLink: Operation was not found in the list of pending operations"
+      );
+    }
+
+    return operation;
+  }
+
   public resolveMostRecentOperation(
     payload: Result | ((operation: Operation) => Result)
   ): void {

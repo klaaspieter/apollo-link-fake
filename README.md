@@ -74,8 +74,9 @@ expect(getByText("42 years old")).toBeInTheDocument();
 
 # API reference
 
-- `pendingOperations` - Get all operations executed so far that have not been resolved or rejected
-- `resolveMostRecentOperation` - Given a `Result` or a function that takes an `Operation` and returns `Result` resolves the operation with the provided `Result`. `Result` is defined as `Record<string, any>` which translates to any `{}`.
+- `pendingOperations` - Get all operations executed so far that have not been resolved or rejected.
+- `resolveMostRecentOperation` - Given a `Result` or a function that takes an `Operation` and returns `Result` resolves the operation with the provided `Result`. `Result` is defined as `Record<string, any>` which translates to any `{}`. Throws an error when there are no pending operations.
+- `findOperation` - Given a predicate `(Operation) -> boolean` returns the first operation for which the predicate is true. Throws an error if no matching operation is found.
 
 [API reference]: #api-reference
 [FakeQL]: https://github.com/klaaspieter/fakeql
