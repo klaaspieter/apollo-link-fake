@@ -29,6 +29,18 @@ const query = gql`
     }
   }
 `;
+const schema = introspectionFromSchema(
+  buildSchema(`
+  type Query {
+    user: User!
+  }
+
+  type User {
+    name: String!
+    age: Int!
+  }
+`)
+);
 const link = new MockLink();
 const Component = (): JSX.Element => {
   const { loading, data } = useQuery(query);
@@ -53,17 +65,17 @@ const { getByText } = render(
 
 expect(getByText("Loading…")).toBeInTheDocument();
 
-link.resolveMostRecentOperation(fakeQL);
+link.resolveMostRecentOperation((operation) =>
+  fakeQL({ operation, schema })
+);
 
 expect(getByText(`mock-value-for-field-"name"`)).toBeInTheDocument();
-expect(
-  getByText(`mock-value-for-field-"age" years old`)
-).toBeInTheDocument();
+expect(getByText("42 years old")).toBeInTheDocument();
 ```
 
 [FakeQL]: https://github.com/klaaspieter/fakeql
 
-However it is possible to return your own manual mocks. This method allows more control about when a GraphQL operation is resolved which will make things like polling or dependent operations much easier to test than with Apollo's MockedProvider:
+However it is possible to return your own manual mocks:
 
 ```jsx
 const query = gql`
