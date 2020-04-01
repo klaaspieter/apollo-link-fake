@@ -18,29 +18,24 @@ yarn add --dev apollo-link-mock
 
 ## Usage
 
-It is recommended to use apollo-mock-link with [FakeQL]:
+This example is recommended usage which uses [FakeQL] and a [configured GraphQL project][graphql-config]. For more advanced usage take a look at the [full API reference][API reference]
 
-```jsx
-const query = gql`
-  query {
-    user {
-      name
-      age
-    }
-  }
-`;
-const schema = introspectionFromSchema(
-  buildSchema(`
-  type Query {
-    user: User!
-  }
+With the following schema is configured:
 
-  type User {
-    name: String!
-    age: Int!
-  }
-`)
-);
+```gql
+type Query {
+  user: User!
+}
+
+type User {
+  name: String!
+  age: Int!
+}
+```
+
+And this component under test:
+
+```typescript
 const link = new MockLink();
 const Component = (): JSX.Element => {
   const { loading, data } = useQuery(query);
@@ -56,7 +51,11 @@ const Component = (): JSX.Element => {
     </div>
   );
 };
+```
 
+This is an example of a test using `apollo-mock-link`:
+
+```typescript
 const { getByText } = render(
   <MockedProvider addTypename={false} link={link}>
     <Component />
@@ -66,57 +65,18 @@ const { getByText } = render(
 expect(getByText("Loading…")).toBeInTheDocument();
 
 link.resolveMostRecentOperation((operation) =>
-  fakeQL({ operation, schema })
+  fakeQL({ operation })
 );
 
 expect(getByText(`mock-value-for-field-"name"`)).toBeInTheDocument();
 expect(getByText("42 years old")).toBeInTheDocument();
 ```
 
+# API reference
+
+- `pendingOperations` - Get all operations executed so far that have not been resolved or rejected
+- `resolveMostRecentOperation` - Given a `Result` or a function that takes an `Operation` and returns `Result` resolves the operation with the provided `Result`. `Result` is defined as `Record<string, any>` which translates to any `{}`.
+
+[API reference]: #api-reference
 [FakeQL]: https://github.com/klaaspieter/fakeql
-
-However it is possible to return your own manual mocks:
-
-```jsx
-const query = gql`
-  query {
-    user {
-      name
-      age
-    }
-  }
-`;
-const link = new MockLink();
-const Component = (): JSX.Element => {
-  const { loading, data } = useQuery(query);
-
-  if (!data || loading) {
-    return <>Loading…</>;
-  }
-
-  return (
-    <div>
-      Hello my name is <span>{data.user.name}</span> and I am{" "}
-      <span>{data.user.age} years old</span>
-    </div>
-  );
-};
-
-const { getByText } = render(
-  <MockedProvider addTypename={false} link={link}>
-    <Component />
-  </MockedProvider>
-);
-
-expect(getByText("Loading…")).toBeInTheDocument();
-
-link.resolveMostRecentOperation({
-  user: {
-    name: "Wei Shi Lindon Arelius",
-    age: 18,
-  },
-});
-
-expect(getByText("Wei Shi Lindon Arelius")).toBeInTheDocument();
-expect(getByText("18 years old")).toBeInTheDocument();
-```
+[graphql-config]: https://github.com/kamilkisiela/graphql-config
