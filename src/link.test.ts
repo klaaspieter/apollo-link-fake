@@ -114,7 +114,7 @@ describe("MockLink", () => {
       link.resolveMostRecentOperation(result);
     });
 
-    it("can provided the operation to respond to", (done) => {
+    it("can provide the operation to respond to", (done) => {
       const query = gql`
         query {
           user {
@@ -145,6 +145,57 @@ describe("MockLink", () => {
     it("throws when there are no more operations", () => {
       const link = new MockLink();
       expect(() => link.resolveMostRecentOperation({})).toThrow(
+        "MockLink: There are no pending operations"
+      );
+    });
+  });
+
+  describe("rejectMostRecentOperation", () => {
+    it("can respond with an error", (done) => {
+      const query = gql`
+        query {
+          user {
+            name
+            age
+          }
+        }
+      `;
+      const error = new Error("I failed you");
+      const link = new MockLink();
+
+      execute(link, { query }).subscribe({
+        error: (e) => {
+          expect(e).toEqual(error);
+          done();
+        },
+      });
+      link.rejectMostRecentOperation(error);
+    });
+
+    it("can provide the operation to respond to", (done) => {
+      const query = gql`
+        query {
+          user {
+            name
+            age
+          }
+        }
+      `;
+      const error = new Error("I failed you");
+      const link = new MockLink();
+
+      execute(link, { query }).subscribe({
+        error: (e) => {
+          expect(e).toEqual(error);
+          done();
+        },
+      });
+      link.rejectMostRecentOperation(() => error);
+    });
+
+    it("throws when there are no more operations", () => {
+      const link = new MockLink();
+      expect(() => link.rejectMostRecentOperation(new Error())).toThrow(
         "MockLink: There are no pending operations"
       );
     });

@@ -52,5 +52,24 @@ class MockLink extends ApolloLink {
       observer.complete();
     });
   }
+
+  public rejectMostRecentOperation(
+    payload: Error | ((operation: Operation) => Error)
+  ): void {
+    const request = this.requests.pop();
+
+    act(() => {
+      if (!request) {
+        throw new Error("MockLink: There are no pending operations");
+      }
+
+      const { observer, operation } = request;
+
+      const error =
+        typeof payload === "function" ? payload(operation) : payload;
+      observer.error(error);
+      observer.complete();
+    });
+  }
 }
 export { MockLink };
