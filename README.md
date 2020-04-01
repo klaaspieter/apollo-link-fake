@@ -76,7 +76,7 @@ expect(getByText("42 years old")).toBeInTheDocument();
 
 ## Types
 
-- `Result` - is defined as `Record<string, any>` which translates to any `{}`.
+- `Result` - is defined as `Record<string, unknown>` which translates to any `{}`.
 
 ## Methods
 

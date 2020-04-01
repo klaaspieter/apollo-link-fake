@@ -2,8 +2,7 @@ import { act } from "react-dom/test-utils";
 import { ApolloLink, Operation, FetchResult } from "apollo-link";
 import Observable, { ZenObservable } from "zen-observable-ts";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type Result = Record<string, any>;
+type Result = Record<string, unknown>;
 
 class MockLink extends ApolloLink {
   private requests: {
