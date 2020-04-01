@@ -116,7 +116,7 @@ describe("MockLink", () => {
 
     it("can provide the operation to respond to", (done) => {
       const query = gql`
-        query {
+        query me {
           user {
             name
             age
@@ -139,7 +139,10 @@ describe("MockLink", () => {
           done();
         },
       });
-      link.resolveMostRecentOperation(() => result);
+      link.resolveMostRecentOperation((operation) => {
+        expect(operation.operationName).toBe("me");
+        return result;
+      });
     });
 
     it("throws when there are no more operations", () => {
@@ -174,7 +177,7 @@ describe("MockLink", () => {
 
     it("can provide the operation to respond to", (done) => {
       const query = gql`
-        query {
+        query me {
           user {
             name
             age
@@ -190,7 +193,10 @@ describe("MockLink", () => {
           done();
         },
       });
-      link.rejectMostRecentOperation(() => error);
+      link.rejectMostRecentOperation((operation) => {
+        expect(operation.operationName).toBe("me");
+        return error;
+      });
     });
 
     it("throws when there are no more operations", () => {
