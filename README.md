@@ -81,6 +81,7 @@ expect(getByText("42 years old")).toBeInTheDocument();
 ## Methods
 
 - `pendingOperations` - Get all operations executed so far that have not been resolved or rejected.
+- `mostRecentOperation` - Return the most recent operation. Throws an error when there are no pending operations.
 - `resolveMostRecentOperation` - Given a `Result` or a function `Operation => Result`, resolves the operation with the provided `Result`. Throws an error when there are no pending operations.
 - - `rejectMostRecentOperation` - Given a `Error` or a function `Operation => Error`, rejects the operation with the provided `Error`. Throws an error when there are no pending operations.
 - `findOperation` - Given a predicate `(Operation) -> boolean` returns the first operation for which the predicate is true. Throws an error if no matching operation is found.

@@ -54,6 +54,32 @@ describe("MockLink", () => {
     });
   });
 
+  describe("mostRecentOperation", () => {
+    it("returns the most recent operation", () => {
+      const query = gql`
+        query me {
+          user {
+            name
+            age
+          }
+        }
+      `;
+      const link = new MockLink();
+
+      execute(link, { query }).subscribe({});
+
+      expect(link.mostRecentOperation.operationName).toBe("me");
+    });
+
+    it("throws an error when there are no pending operations", () => {
+      const link = new MockLink();
+
+      expect(() => {
+        link.mostRecentOperation;
+      }).toThrow("MockLink: There are no pending operations");
+    });
+  });
+
   describe("findOperation", () => {
     it("finds the first operation that matches", () => {
       const query = gql`
