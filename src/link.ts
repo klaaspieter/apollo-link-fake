@@ -3,35 +3,63 @@ import { ApolloLink, Operation, FetchResult } from "apollo-link";
 import Observable, { ZenObservable } from "zen-observable-ts";
 
 type Result = Record<string, unknown>;
+export type Resolve = (result: Result) => void;
+export type Reject = (error: Error) => void;
+
+export interface PendingOperation extends Operation {
+  resolve: Resolve;
+  reject: Reject;
+}
+
+const createPendingOperation = ({
+  operation,
+  observer,
+}: {
+  operation: Operation;
+  observer: ZenObservable.SubscriptionObserver<FetchResult>;
+}): PendingOperation => {
+  const resolve: Resolve = (result) => {
+    observer.next({ data: result });
+    observer.complete();
+  };
+
+  const reject: Reject = (error: Error) => {
+    observer.error(error);
+    observer.complete();
+  };
+
+  return { ...operation, resolve, reject };
+};
 
 class MockLink extends ApolloLink {
-  private requests: {
-    operation: Operation;
-    observer: ZenObservable.SubscriptionObserver<FetchResult>;
-  }[] = [];
+  private _pendingOperations: PendingOperation[] = [];
 
   public request(operation: Operation): Observable<FetchResult> {
     return new Observable<FetchResult>((observer) => {
-      this.requests.push({ operation, observer });
+      this.pendingOperations.push(
+        createPendingOperation({ operation, observer })
+      );
     });
   }
 
-  public get pendingOperations(): Operation[] {
-    return this.requests.map((request) => request.operation);
+  public get pendingOperations(): PendingOperation[] {
+    return this._pendingOperations;
   }
 
-  public get mostRecentOperation(): Operation {
-    if (this.requests.length <= 0) {
+  public get mostRecentOperation(): PendingOperation {
+    if (this.pendingOperations.length <= 0) {
       throw new Error("MockLink: There are no pending operations");
     }
 
-    return this.requests[0].operation;
+    return this.pendingOperations[0];
   }
 
   public findOperation(
     predicate: (operation: Operation) => boolean
   ): Operation {
-    const operation = this.pendingOperations.find(predicate);
+    const operation = this.pendingOperations
+      .map((pendingOperation) => pendingOperation)
+      .find(predicate);
 
     if (operation === undefined) {
       throw new Error(
@@ -45,37 +73,32 @@ class MockLink extends ApolloLink {
   public resolveMostRecentOperation(
     payload: Result | ((operation: Operation) => Result)
   ): void {
-    const request = this.requests.pop();
+    const pendingOperation = this.pendingOperations.pop();
 
     act(() => {
-      if (!request) {
+      if (!pendingOperation) {
         throw new Error("MockLink: There are no pending operations");
       }
 
-      const { operation, observer } = request;
-
-      const data = typeof payload === "function" ? payload(operation) : payload;
-      observer.next({ data });
-      observer.complete();
+      const data =
+        typeof payload === "function" ? payload(pendingOperation) : payload;
+      pendingOperation.resolve(data);
     });
   }
 
   public rejectMostRecentOperation(
     payload: Error | ((operation: Operation) => Error)
   ): void {
-    const request = this.requests.pop();
+    const pendingOperation = this.pendingOperations.pop();
 
     act(() => {
-      if (!request) {
+      if (!pendingOperation) {
         throw new Error("MockLink: There are no pending operations");
       }
 
-      const { observer, operation } = request;
-
       const error =
-        typeof payload === "function" ? payload(operation) : payload;
-      observer.error(error);
-      observer.complete();
+        typeof payload === "function" ? payload(pendingOperation) : payload;
+      pendingOperation.reject(error);
     });
   }
 }

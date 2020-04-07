@@ -86,7 +86,12 @@ expect(getByText("42 years old")).toBeInTheDocument();
 - - `rejectMostRecentOperation` - Given a `Error` or a function `Operation => Error`, rejects the operation with the provided `Error`. Throws an error when there are no pending operations.
 - `findOperation` - Given a predicate `(Operation) -> boolean` returns the first operation for which the predicate is true. Throws an error if no matching operation is found.
 
+## PendingOperation
 
+Some methods return a `PendingOperation` which has the following API:
+
+- resolve - Resolves the operation with the provided `Result`
+- reject - Rejects the operation with the provided `Error`
 
 [API reference]: #api-reference
 [FakeQL]: https://github.com/klaaspieter/fakeql

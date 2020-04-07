@@ -232,4 +232,35 @@ describe("MockLink", () => {
       );
     });
   });
+
+  describe("PendingOperation", () => {
+    it("can be resolved", (done) => {
+      const query = gql`
+        query {
+          user {
+            name
+            age
+          }
+        }
+      `;
+      const link = new MockLink();
+      const result = {
+        user: {
+          name: "test",
+          age: 5,
+        },
+      };
+
+      execute(link, { query }).subscribe({
+        next: (r) => {
+          expect(r).toEqual({ data: result });
+          done();
+        },
+      });
+
+      link.mostRecentOperation.resolve(result);
+    });
+
+    it("can be rejected", () => {});
+  });
 });
