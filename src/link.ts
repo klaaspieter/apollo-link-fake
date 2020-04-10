@@ -11,33 +11,38 @@ export interface PendingOperation extends Operation {
   reject: Reject;
 }
 
-const createPendingOperation = ({
-  operation,
-  observer,
-}: {
-  operation: Operation;
-  observer: ZenObservable.SubscriptionObserver<FetchResult>;
-}): PendingOperation => {
-  const resolve: Resolve = (result) => {
-    observer.next({ data: result });
-    observer.complete();
-  };
-
-  const reject: Reject = (error: Error) => {
-    observer.error(error);
-    observer.complete();
-  };
-
-  return { ...operation, resolve, reject };
-};
-
 class MockLink extends ApolloLink {
   private _pendingOperations: PendingOperation[] = [];
+
+  private createPendingOperation(
+    operation: Operation,
+    observer: ZenObservable.SubscriptionObserver<FetchResult>
+  ): PendingOperation {
+    const complete = (): void => {
+      observer.complete();
+
+      this._pendingOperations = this._pendingOperations.filter(
+        (pending) => pending.toKey() !== operation.toKey()
+      );
+    };
+
+    const resolve: Resolve = (result) => {
+      observer.next({ data: result });
+      complete();
+    };
+
+    const reject: Reject = (error: Error) => {
+      observer.error(error);
+      complete();
+    };
+
+    return { ...operation, toKey: operation.toKey, resolve, reject };
+  }
 
   public request(operation: Operation): Observable<FetchResult> {
     return new Observable<FetchResult>((observer) => {
       this.pendingOperations.push(
-        createPendingOperation({ operation, observer })
+        this.createPendingOperation(operation, observer)
       );
     });
   }
@@ -102,4 +107,5 @@ class MockLink extends ApolloLink {
     });
   }
 }
+
 export { MockLink };

@@ -259,8 +259,30 @@ describe("MockLink", () => {
       });
 
       link.mostRecentOperation.resolve(result);
+      expect(link.pendingOperations.length).toBe(0);
     });
 
-    it("can be rejected", () => {});
+    it("can be rejected", (done) => {
+      const query = gql`
+        query {
+          user {
+            name
+            age
+          }
+        }
+      `;
+      const link = new MockLink();
+      const error = new Error();
+
+      execute(link, { query }).subscribe({
+        error: (e) => {
+          expect(e).toEqual(error);
+          done();
+        },
+      });
+
+      link.mostRecentOperation.reject(error);
+      expect(link.pendingOperations.length).toBe(0);
+    });
   });
 });
