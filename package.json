@@ -8,7 +8,7 @@
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "files": [
-    "lib/**/*"
+    "build/**/*"
   ],
   "scripts": {
     "build": "tsc",
