@@ -1,4 +1,4 @@
-# apollo-link-mock
+# apollo-link-fake
 
 Convenient Apollo mocking
 
@@ -7,13 +7,13 @@ Convenient Apollo mocking
 ### npm
 
 ```sh
-npm install --save-dev apollo-link-mock
+npm install --save-dev apollo-link-fake
 ```
 
 ### yarn
 
 ```sh
-yarn add --dev apollo-link-mock
+yarn add --dev apollo-link-fake
 ```
 
 ## Usage
@@ -53,7 +53,7 @@ const Component = (): JSX.Element => {
 };
 ```
 
-This is an example of a test using `apollo-mock-link`:
+This is an example of a test using `apollo-link-fake`:
 
 ```typescript
 const { getByText } = render(

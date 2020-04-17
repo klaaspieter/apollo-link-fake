@@ -1,8 +1,8 @@
 {
-  "name": "apollo-link-mock",
+  "name": "apollo-link-fake",
   "version": "0.0.1",
   "description": "Convenient Apollo mocking",
-  "repository": "https://github.com/klaaspieter/apollo-link-mock",
+  "repository": "https://github.com/klaaspieter/apollo-link-fake",
   "author": "Klaas Pieter Annema <kp@annema.me>",
   "license": "MIT",
   "main": "build/index.js",
